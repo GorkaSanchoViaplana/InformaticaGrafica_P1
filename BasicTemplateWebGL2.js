@@ -2,7 +2,7 @@ var gl = null;
 var program;
 
   var cercle = {
-    "vertices" : generarCercle(16,0.2,0.2,0.1)
+    "vertices" : generarCuadrat(0.5,0.5,0.1)
   };
 
 
@@ -66,9 +66,12 @@ function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre
     return vertexCercle;
 }
 
-function generarCuadrat(origen_x,origen_y,tamany) { //Origen sera el punt d'adalt a l'esquerra
+export function generarCuadrat(origen_x,origen_y,tamany) { //Origen sera el punt d'adalt a l'esquerra
   var vertexCuadrat = [];
   vertexCuadrat.push(origen_x,origen_y);
+  vertexCuadrat.push(origen_x+tamany,origen_y);
+  vertexCuadrat.push(origen_x,origen_y+tamany);
+  //Es repeteix pq son dos 
   vertexCuadrat.push(origen_x+tamany,origen_y);
   vertexCuadrat.push(origen_x,origen_y+tamany);
   vertexCuadrat.push(origen_x+tamany,origen_y+tamany);
@@ -85,13 +88,13 @@ function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera equilater
 }
 
 
-function initBuffers(model) {
+export function initBuffers(model) {
   model.idBufferVertices = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
 }
 
-function draw(model) {
+export function draw(model) {
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
   gl.vertexAttribPointer(program.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLES, 0, model.vertices.length / 2);  //  Usar drawArrays / Fer servir 3?
