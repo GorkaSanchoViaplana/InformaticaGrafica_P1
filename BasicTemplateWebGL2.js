@@ -1,10 +1,8 @@
-import player from "player.js";
-import enemy from "enemy.js";
 var gl = null;
 var program;
 
   var cercle = {
-    "vertices" : generarCercle(360,0,0,0.3)
+    "vertices" : generarCercle(16,0.2,0.2,0.1)
   };
 
 
@@ -55,15 +53,15 @@ function initRendering() {
 }
 
 
-function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre del cercle
+function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre del cercle. Depenent del nVertes fara coses diferents
     //Fer array i posarlo al draw
     var vertexCercle = [];
     for(var i=0.0;i<=nVertex;i++) {
-        var vertex1 = (i * 2 *Math.PI /nVertex) * radi;
-        var vertex2 = ((i+1)*2*Math.PI / nVertex) * radi;
+        var vertex1 = (i * 2 *Math.PI /nVertex);
+        var vertex2 = ((i+1)*2*Math.PI / nVertex);
         vertexCercle.push(origen_x,origen_y); //Origen del cercle
-        vertexCercle.push(Math.cos(vertex1),Math.sin(vertex1));
-        vertexCercle.push(Math.cos(vertex2),Math.sin(vertex2));
+        vertexCercle.push(origen_x+radi*Math.cos(vertex1), origen_y+radi*Math.sin(vertex1));
+        vertexCercle.push(origen_x+radi*Math.cos(vertex2), origen_y+radi*Math.sin(vertex2));
     }
     return vertexCercle;
 }
@@ -76,6 +74,14 @@ function generarCuadrat(origen_x,origen_y,tamany) { //Origen sera el punt d'adal
   vertexCuadrat.push(origen_x+tamany,origen_y+tamany);
 
   return vertexCuadrat;
+}
+
+function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera equilater
+  var vertexTriangle = [];
+  vertexTriangle.push(origen_x,origen_y);
+  vertexTriangle.push(origen_x,origen_y+tamany);
+  vertexTriangle.push(origen_x+tamany/2, origen_y+Math.sqrt(tamany*tamany-tamany/2*tamany/2)); //Toca fer pitagoras :(
+  return vertexTriangle;
 }
 
 
@@ -104,9 +110,13 @@ function initWebGL() {
     return;
   }
   initShaders();
-  initBuffers(cercle);
-  initRendering();
-  requestAnimationFrame(drawScene);
+  //Tocara fer la generacio inicial de enemics i personatge
+  
+  console.log(cercle);
+  //var e = new enemy(0,0,0.1,0);
+  initBuffers(cercle); //S'haura de repetir per cada figura
+  initRendering(); //Nomes fa falta 1
+  requestAnimationFrame(drawScene); //Tocara ficar el loop
 }
 
 
