@@ -20,17 +20,28 @@ export default class enemy {
     }
 
     moureEnemic(movX,movY){ //Els enemics s'aniran movent i per tant s'han d'anar actualitzant les coordenades. Si retrocedeixen sera negatiu
-        var horitzontal = true; //El primer es al eix X
-        for (coordeanda in this.coordenades){
-            if(horitzontal){
-                coordeanda = coordeanda+movX;
-            }
-            else{
-                coordeanda = coordeanda+movY;
-            }
+        let horitzontal = true; //El primer es al eix X
+        for(let i=0;i<this.coordenades.vertices.length;i++){
+            horitzontal ? this.coordenades.vertices[i]+=movX : this.coordenades.vertices[i]+=movY;
             horitzontal = !horitzontal;
         }
+    }
+
+    retornaXMax(){
+        return this.coordenades.vertices[2]; //Es la X del vertex d'abaix a la dreta  
+    }
+    retornaXMin(){
+        return this.coordenades.vertices[0]; //Es la Y del vertex d'adalt a l'esquerra
+    }
+    retornaYMax(){
+        return this.coordenades.vertices[5];
+    }
+    retornaYmin(){
+        return this.coordenades.vertices[1]; //Es la Y del vertex d'abaix a l'esquerra
+    }
+    morir(){
 
     }
+
 
 }

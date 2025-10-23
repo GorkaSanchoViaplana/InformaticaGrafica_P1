@@ -1,25 +1,6 @@
 var gl = null;
 var program;
 
-  var cercle = {
-    "vertices" : generarCuadrat(0.5,0.5,0.1)
-  };
-
-
-
-function loop() {
-  update(); 
-  render();
-  requestAnimationFrame(loop);
-}
-
-function update() {
-  //Ficar logica joc
-}
-
-function render() {
-    drawScene();
-}
 
 function getWebGLContext() {
   var canvas = document.getElementById("myCanvas");
@@ -53,7 +34,7 @@ function initRendering() {
 }
 
 
-function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre del cercle. Depenent del nVertes fara coses diferents
+export function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre del cercle. Depenent del nVertes fara coses diferents
     //Fer array i posarlo al draw
     var vertexCercle = [];
     for(var i=0.0;i<=nVertex;i++) {
@@ -68,21 +49,21 @@ function generarCercle(nVertex,origen_x,origen_y,radi) { //Origen sera el centre
 
 export function generarCuadrat(origen_x,origen_y,tamany) { //Origen sera el punt d'adalt a l'esquerra
   var vertexCuadrat = [];
-  vertexCuadrat.push(origen_x,origen_y);
-  vertexCuadrat.push(origen_x+tamany,origen_y);
-  vertexCuadrat.push(origen_x,origen_y+tamany);
+  vertexCuadrat.push(origen_x,origen_y); // 0 1
+  vertexCuadrat.push(origen_x+tamany,origen_y); // 2 3
+  vertexCuadrat.push(origen_x,origen_y+tamany);// 4 5
   //Es repeteix pq son dos 
-  vertexCuadrat.push(origen_x+tamany,origen_y);
-  vertexCuadrat.push(origen_x,origen_y+tamany);
-  vertexCuadrat.push(origen_x+tamany,origen_y+tamany);
+  vertexCuadrat.push(origen_x+tamany,origen_y); // 6 7
+  vertexCuadrat.push(origen_x,origen_y+tamany); // 8 9
+  vertexCuadrat.push(origen_x+tamany,origen_y+tamany); // 10 11
 
   return vertexCuadrat;
 }
 
-function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera equilater
+export function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera equilater
   var vertexTriangle = [];
   vertexTriangle.push(origen_x,origen_y);
-  vertexTriangle.push(origen_x,origen_y+tamany);
+  vertexTriangle.push(origen_x+tamany,origen_y);
   vertexTriangle.push(origen_x+tamany/2, origen_y+Math.sqrt(tamany*tamany-tamany/2*tamany/2)); //Toca fer pitagoras :(
   return vertexTriangle;
 }
@@ -91,13 +72,23 @@ function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera equilater
 export function initBuffers(model) {
   model.idBufferVertices = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.DYNAMIC_DRAW);
+
+  //Iniciar buffer color
 }
 
 export function draw(model) {
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
   gl.vertexAttribPointer(program.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferFragment);
+  //gl.
+
   gl.drawArrays(gl.TRIANGLES, 0, model.vertices.length / 2);  //  Usar drawArrays / Fer servir 3?
+}
+
+function dibuixa(model) {
+  //Ficar tot
+
 }
 
 
@@ -106,7 +97,12 @@ function drawScene() {
   draw(cercle);
 }
 
-function initWebGL() {
+export function pintarfons(){
+  gl.clear(gl.COLOR_BUFFER_BIT);
+}
+
+
+export function initWebGL() {
   gl = getWebGLContext();
   if (!gl) {
     alert("WebGL 2.0 no está disponible");
@@ -114,13 +110,10 @@ function initWebGL() {
   }
   initShaders();
   //Tocara fer la generacio inicial de enemics i personatge
-  
-  console.log(cercle);
-  //var e = new enemy(0,0,0.1,0);
-  initBuffers(cercle); //S'haura de repetir per cada figura
   initRendering(); //Nomes fa falta 1
-  requestAnimationFrame(drawScene); //Tocara ficar el loop
+  //gl.clear(gl.COLOR_BUFFER_BIT);
+  //requestAnimationFrame(drawScene); //Tocara ficar el loop
 }
 
 
-initWebGL();
+//initWebGL();
