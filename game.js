@@ -1,22 +1,29 @@
 //Aqui es on es dona el joc, unint totes les clases;
 import enemy from "./enemy.js";
 import player from "./player.js"; 
+import balas from "./balas.js";
 import { initWebGL } from "./BasicTemplateWebGL2.js";
 import { pintarfons } from "./BasicTemplateWebGL2.js";
 import { generarCercle } from "./BasicTemplateWebGL2.js";
 let enemics = [];
 let jugador;
-let balas = [];
+let balasActivas = [];
+
+const enemyIntervalMoviment = 300; //Temps q li dono al enemic entre moviments
+const tempsEntreBalas = 500;
 
 let playerMovX = 0.02;
 let playerMovDreta = false;
 let playerMovEsquerra = false;
 
+let balaMovY = 0.03;
+let tamanyBala = 0.03;
+let ultimaBalaTemps=0;
+
 let enemyDireccio = 1; //Pel moviment del enemic
 let enemyMovX = 0.01;
 let enemyMovY = -0.03;
-let enemyIntervalMoviment = 300; //Temps q li dono al enemic entre moviments
-let enemyTimerMoviment = 0; //Temps desde l'ultim moviment
+let enemyUltimMoviment = 0; //Temps desde l'ultim moviment
 
 
 function loop() {
@@ -26,10 +33,23 @@ function loop() {
 }
 
 
+window.addEventListener("keydown",(e)=>{
+  if(e.code === "ArrowLeft" || e.code ==="KeyA") playerMovEsquerra = true;
+  if(e.code === "ArrowRight" || e.code ==="KeyD") playerMovDreta = true;
+});
+window.addEventListener("keyup",(e)=>{
+  if(e.code === "ArrowLeft" || e.code ==="KeyA") playerMovEsquerra = false;
+  if(e.code === "ArrowRight" || e.code ==="KeyD") playerMovDreta = false;
+});
+
+window.addEventListener("keydown",(e)=>{
+  if(e.code === "Space") disparaBala(); //Falta afegir condicional del timer
+});
+
 function moureEnemics(temps){
-  enemyTimerMoviment += temps;
-  if(enemyTimerMoviment < enemyIntervalMoviment) return; //Osea no fa res
-  enemyTimerMoviment = 0;
+  enemyUltimMoviment += temps;
+  if(enemyUltimMoviment < enemyIntervalMoviment) return; //Osea no fa res
+  enemyUltimMoviment = 0;
 
   let tocaDreta = false;
   let tocaEsquerra = false; //ELs 2 son per a saber si els enemics estan al extrem
@@ -47,19 +67,18 @@ function moureEnemics(temps){
     enemics.forEach(e=> e.moureEnemic(enemyMovX*enemyDireccio,0.0));
 }
 
-window.addEventListener("keydown",(e)=>{
-  if(e.code === "ArrowLeft" || e.code ==="KeyA") playerMovEsquerra = true;
-  if(e.code === "ArrowRight" || e.code ==="KeyD") playerMovDreta = true;
-});
-window.addEventListener("keyup",(e)=>{
-  if(e.code === "ArrowLeft" || e.code ==="KeyA") playerMovEsquerra = false;
-  if(e.code === "ArrowRight" || e.code ==="KeyD") playerMovDreta = false;
-});
+function moureBalas(){
+    let tocaAdalt = false;
 
-window.addEventListener("click",(e)=>{
-  if(e.code === "Space") ; //fer el dispar de la bala i afegirla a la llista
-});
-
+    balasActivas.forEach((e, i) =>{
+      if(e.retornaYMax()>=1.0) {
+        delete balasActivas[i];
+        balasActivas.splice(i,i); //Aixo es per a no tenir el array ple de empty
+        //console.log(balasActivas);
+      }
+      e.moureBala(balaMovY);
+    });
+}
 
 function mourePlayer(){
   if(playerMovDreta && jugador.retornaXmax()<1.0)jugador.mourePlayer(playerMovX);
@@ -88,9 +107,7 @@ function update() { //Part logica del joc
   comprovarDerrota();
   moureEnemics();
   mourePlayer();
-  //mourebales
-
-  
+  moureBalas();
 }
 
 
@@ -98,9 +115,21 @@ function render() { //Tota al part d'anar dibuixant
   pintarfons();
   enemics.forEach(e => e.drawEnemy());
   jugador.drawPlayer();
+  balasActivas.forEach(e => e.drawBala());
 
 }
 
+function disparaBala(){
+  //Toca ficar timer pq sino es una locura
+    const tempsActual = Date.now(); //Literal el temps q ha pasat desde el 1970 fins avui
+    if(tempsActual - ultimaBalaTemps < tempsEntreBalas)return;
+    ultimaBalaTemps = tempsActual;
+    let origenX = jugador.retornaXcentral();
+    let origenY = jugador.retornaYcentral();
+    let color = [0.0,0.1,0.0,1.0];
+    let bala = new balas(origenX,origenY,tamanyBala,color);
+    balasActivas.push(bala);
+}
 
 function inicialitzarJoc() {
   initWebGL(); //Inicio shaders i tot
@@ -121,8 +150,6 @@ function inicialitzarJoc() {
   }
   let playerColor = [0.0,0.0,0.1,1];
   jugador = new player(-0.1,-0.9,0.2,playerColor);
-  let cercle = generarCercle(4,0,0,0.1);
-  console.log(cercle);
   loop();
 }
 

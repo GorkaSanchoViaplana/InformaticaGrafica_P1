@@ -34,5 +34,11 @@ export default class player {
     retornaYmax(){
         return this.coordenades.vertices[5];
     }
+    retornaXcentral(){
+        return this.coordenades.vertices[4];
+    }
+    retornaYcentral(){
+        return this.coordenades.vertices[5];
+    }
 
 }
