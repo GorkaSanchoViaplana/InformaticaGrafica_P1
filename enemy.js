@@ -11,12 +11,12 @@ export default class enemy {
         };
         
         this.color = color;
+        this.mort = false;
     }
 
     drawEnemy() {
         initBuffers(this.coordenades);
-        draw(this.coordenades);
-        //Assignar color aqui??
+        draw(this.coordenades,this.color);
     }
 
     moureEnemic(movX,movY){ //Els enemics s'aniran movent i per tant s'han d'anar actualitzant les coordenades. Si retrocedeixen sera negatiu
@@ -40,7 +40,7 @@ export default class enemy {
         return this.coordenades.vertices[1]; //Es la Y del vertex d'abaix a l'esquerra
     }
     morir(){
-
+        this.mort = true;
     }
 
 

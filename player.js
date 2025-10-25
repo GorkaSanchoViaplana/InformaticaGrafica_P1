@@ -7,11 +7,12 @@ export default class player {
             "vertices" : generarTriangle(x,y,tamany) //0.0 0.1 1.0 1.1
         };
         this.color = color;
+        this.mort = false;
     }
     
     drawPlayer(){
         initBuffers(this.coordenades);
-        draw(this.coordenades);
+        draw(this.coordenades,this.color);
     }
 
     mourePlayer(movX){
@@ -39,6 +40,9 @@ export default class player {
     }
     retornaYcentral(){
         return this.coordenades.vertices[5];
+    }
+    morir(){
+        this.mort = true;
     }
 
 }

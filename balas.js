@@ -1,5 +1,6 @@
 import { generarCercle } from "./BasicTemplateWebGL2.js";
 import { draw } from './BasicTemplateWebGL2.js';
+import { drawLine } from "./BasicTemplateWebGL2.js";
 import { initBuffers } from './BasicTemplateWebGL2.js';
 export default class balas{
     constructor(x,y,tamany,color) {
@@ -11,8 +12,8 @@ export default class balas{
     }
     drawBala() {
         initBuffers(this.coordenades);
-        draw(this.coordenades);
-        //Assignar color aqui??
+        //draw(this.coordenades,this.color);
+        drawLine(this.coordenades,this.color); //Ho faig amb drawline perque ho demana el enunciat
     }
     moureBala(movY){
         let vertical = false;

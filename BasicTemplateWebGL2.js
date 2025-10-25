@@ -27,6 +27,9 @@ function initShaders() {
 
   program.vertexPositionAttribute = gl.getAttribLocation(program, "VertexPosition");
   gl.enableVertexAttribArray(program.vertexPositionAttribute);
+
+  program.pointSizeUniform = gl.getUniformLocation(program,"tamanyPunts");
+  program.colorUniform = gl.getUniformLocation(program,"uColor")
 }
 
 function initRendering() {
@@ -68,28 +71,55 @@ export function generarTriangle(origen_x,origen_y,tamany){ //El triangle sera eq
   return vertexTriangle;
 }
 
+export function generarPuntsAleatoris(nPunts){
+  let punts = [];
+  for(let i=0; i<nPunts; i++){
+    //Una mica marronero pero random fa un numero entre 0 i 1, per tant faig el *2 per a evitar problemas i el -1 per a agafar negatius
+      let x = Math.random() * 2 - 1;
+      let y = Math.random() * 2 - 1;
+      punts.push(x, y);
+  }
+  return punts;
+}
+
+
 
 export function initBuffers(model) {
   model.idBufferVertices = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(model.vertices), gl.DYNAMIC_DRAW);
-
-  //Iniciar buffer color
 }
 
-export function draw(model) {
+export function draw(model,color) {
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
   gl.vertexAttribPointer(program.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
   gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferFragment);
-  //gl.
+  gl.uniform4fv(program.colorUniform,color);
 
   gl.drawArrays(gl.TRIANGLES, 0, model.vertices.length / 2);  //  Usar drawArrays / Fer servir 3?
 }
 
-function dibuixa(model) {
-  //Ficar tot
+export function drawLine(model,color) { //Aquest metode es pq demanen fer tambe amb lines i aquestes vainas
+  gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
+  gl.vertexAttribPointer(program.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferFragment);
+  gl.uniform4fv(program.colorUniform,color);
+
+  gl.drawArrays(gl.LINE_LOOP, 0, model.vertices.length / 2);  //  Usar drawArrays / Fer servir 3?
 
 }
+
+export function drawPoint(model,color,tamanyPunt){ //Nomes per punts, sera pel background i aquestes coses
+  gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferVertices);
+  gl.vertexAttribPointer(program.vertexPositionAttribute, 2, gl.FLOAT, false, 0, 0);
+  //gl.bindBuffer(gl.ARRAY_BUFFER, model.idBufferFragment);
+
+  gl.uniform4fv(program.colorUniform,color);
+  gl.uniform1f(program.pointSizeUniform,tamanyPunt);
+
+  gl.drawArrays(gl.POINTS, 0, model.vertices.length/2);  
+}
+
 
 
 function drawScene() {

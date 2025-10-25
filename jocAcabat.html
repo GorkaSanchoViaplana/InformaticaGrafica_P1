@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Fi del Joc</title>
+    <style>
+        body{
+            display:flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh; 
+            background: black;
+            color: white;
+            font-size: 2em;
+        }
+        button{
+            margin-top: 20px;
+            padding: 10px 20px; 
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="resultatText">Has Guanyat!</div>
+    <script>
+        const param = new URLSearchParams(window.location.search);
+        const resultat = param.get('resultat');
+        const text = resultat === "guanyat"? "Has Guanyat!":"Has perdut...";
+        document.getElementById("resultatText").textContent = text;
+    </script>
+
+    <button onclick="location.href='BasicTemplate2.html'">Tornar a jugar</button>
+</body>
+</html>
